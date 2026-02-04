@@ -22,6 +22,7 @@ export const Colors = {
   supplierColor: '#8b5cf6',   // Purple for Supplier
   tripColor: '#10b981',       // Emerald for Trip
   vehicleColor: '#8b5cf6',    // Purple for Vehicle
+  loadingSlipColor: '#f59e0b', // Amber for Loading Slip
 };
 
 export const Spacing = {

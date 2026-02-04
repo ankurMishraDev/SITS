@@ -30,7 +30,7 @@ export default function HomeScreen() {
             onPress={() => router.push('/parties')}
             activeOpacity={0.8}
           >
-            <Ionicons name="people" size={48} color={Colors.textInverse} />
+            <Ionicons name="people" size={34} color={Colors.textInverse} />
             <Text style={styles.buttonText}>PA</Text>
             <Text style={styles.buttonSubtext}>Party Accounts</Text>
           </TouchableOpacity>
@@ -40,7 +40,7 @@ export default function HomeScreen() {
             onPress={() => router.push('/trips')}
             activeOpacity={0.8}
           >
-            <Ionicons name="car" size={48} color={Colors.textInverse} />
+            <Ionicons name="car" size={34} color={Colors.textInverse} />
             <Text style={styles.buttonText}>T</Text>
             <Text style={styles.buttonSubtext}>Trips</Text>
           </TouchableOpacity>
@@ -50,9 +50,19 @@ export default function HomeScreen() {
             onPress={() => router.push('/suppliers')}
             activeOpacity={0.8}
           >
-            <Ionicons name="business" size={48} color={Colors.textInverse} />
+            <Ionicons name="business" size={34} color={Colors.textInverse} />
             <Text style={styles.buttonText}>SA</Text>
             <Text style={styles.buttonSubtext}>Supplier Accounts</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.mainButton, { backgroundColor: Colors.loadingSlipColor }]}
+            onPress={() => router.push('/loading-slips')}
+            activeOpacity={0.8}
+          >
+            <Ionicons name="document-text" size={34} color={Colors.textInverse} />
+            <Text style={styles.buttonText}>LP</Text>
+            <Text style={styles.buttonSubtext}>Loading Slips</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -77,31 +87,37 @@ const styles = StyleSheet.create({
     fontSize: FontSize.md,
     color: Colors.textSecondary,
     textAlign: 'center',
-    marginBottom: Spacing.xxl,
+    marginBottom: Spacing.xl,
   },
   buttonsContainer: {
-    gap: Spacing.lg,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.md,
+    justifyContent: 'center',
   },
   mainButton: {
-    padding: Spacing.xl,
-    borderRadius: BorderRadius.xl,
+    width: '47%',
+    padding: Spacing.lg * 0.7,
+    borderRadius: BorderRadius.lg,
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 5,
+    shadowRadius: 6,
+    elevation: 4,
+    aspectRatio: 1,
+    justifyContent: 'center',
   },
   buttonText: {
-    fontSize: FontSize.xxl,
+    fontSize: FontSize.xl * 0.7,
     fontWeight: 'bold',
     color: Colors.textInverse,
-    marginTop: Spacing.sm,
+    marginTop: Spacing.xs,
   },
   buttonSubtext: {
-    fontSize: FontSize.sm,
+    fontSize: FontSize.xs * 0.9,
     color: Colors.textInverse,
     opacity: 0.9,
-    marginTop: Spacing.xs,
+    marginTop: Spacing.xs * 0.5,
   },
 });

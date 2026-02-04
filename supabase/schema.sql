@@ -147,6 +147,24 @@ CREATE TABLE pods (
     uploaded_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Loading Slips
+-- Stores loading slip information for trip documentation
+CREATE TABLE loading_slips (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    party_id UUID NOT NULL REFERENCES parties(id) ON DELETE CASCADE,
+    vehicle_no VARCHAR(20) NOT NULL,
+    origin_place VARCHAR(255) NOT NULL,
+    destination_place VARCHAR(255) NOT NULL,
+    trip_date DATE NOT NULL,
+    freight_amount DECIMAL(12, 2) NOT NULL DEFAULT 0,
+    advance_amount DECIMAL(12, 2) NOT NULL DEFAULT 0,
+    material_description TEXT,
+    lr_no VARCHAR(50) NOT NULL,
+    notes TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- INDEXES
 -- =============================================
 
@@ -162,6 +180,9 @@ CREATE INDEX idx_charges_side ON charges(side);
 CREATE INDEX idx_balance_payments_trip_id ON balance_payments(trip_id);
 CREATE INDEX idx_balance_payments_side ON balance_payments(side);
 CREATE INDEX idx_pods_trip_id ON pods(trip_id);
+CREATE INDEX idx_loading_slips_party_id ON loading_slips(party_id);
+CREATE INDEX idx_loading_slips_trip_date ON loading_slips(trip_date);
+CREATE INDEX idx_loading_slips_lr_no ON loading_slips(lr_no);
 
 -- SEED DATA
 -- =============================================
@@ -216,6 +237,27 @@ CREATE TRIGGER update_charges_updated_at
 CREATE TRIGGER update_balance_payments_updated_at
     BEFORE UPDATE ON balance_payments
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_loading_slips_updated_at
+    BEFORE UPDATE ON loading_slips
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- VIEWS
+-- =============================================
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    party_id UUID NOT NULL REFERENCES parties(id) ON DELETE CASCADE,
+    vehicle_no VARCHAR(20) NOT NULL,
+    origin_place VARCHAR(255) NOT NULL,
+    destination_place VARCHAR(255) NOT NULL,
+    trip_date DATE NOT NULL,
+    freight_amount DECIMAL(12, 2) NOT NULL DEFAULT 0,
+    advance_amount DECIMAL(12, 2) NOT NULL DEFAULT 0,
+    material_description TEXT,
+    lr_no VARCHAR(50) NOT NULL,
+    notes TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
 
 -- VIEWS
 -- =============================================

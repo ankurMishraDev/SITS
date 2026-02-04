@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import { useLocalSearchParams, Stack } from 'expo-router';
+import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { 
   useTrip, 
@@ -27,6 +27,7 @@ type TabType = 'party' | 'supplier' | 'pod';
 
 export default function TripDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const router = useRouter();
   const { data: trip, isLoading } = useTrip(id);
   const { data: balances } = useTripBalances(id);
   const { data: partyAdvances } = useAdvances(id, 'party');
@@ -178,6 +179,15 @@ export default function TripDetailScreen() {
         onAddCharge={() => handleOpenModal('charge', 'party')}
         onAddBalance={() => handleOpenModal('balance', 'party')}
       />
+
+      {/* Challan Button */}
+      <TouchableOpacity
+        style={styles.challanButton}
+        onPress={() => router.push(`/trips/${id}/challan/party`)}
+      >
+        <Ionicons name="document-text-outline" size={20} color="#fff" />
+        <Text style={styles.challanButtonText}>Generate Party Challan</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 
@@ -226,11 +236,58 @@ export default function TripDetailScreen() {
         onAddBalance={() => handleOpenModal('balance', 'supplier')}
         podRequired={!trip.pod_uploaded}
       />
+
+      {/* Challan Button */}
+      <TouchableOpacity
+        style={styles.challanButton}
+        onPress={() => router.push(`/trips/${id}/challan/supplier`)}
+      >
+        <Ionicons name="document-text-outline" size={20} color="#fff" />
+        <Text style={styles.challanButtonText}>Generate Supplier Challan</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 
   const renderPodSection = () => (
     <ScrollView style={styles.tabContent}>
+      {/* Manual POD Status Toggle */}
+      <Card style={styles.podStatusCard}>
+        <Text style={styles.podStatusTitle}>POD Status</Text>
+        <View style={styles.podStatusToggle}>
+          <View style={styles.podStatusInfo}>
+            <Ionicons 
+              name={trip.pod_uploaded ? "checkmark-circle" : "close-circle"} 
+              size={48} 
+              color={trip.pod_uploaded ? Colors.success : Colors.textSecondary}
+            />
+            <Text style={styles.podStatusLabel}>
+              {trip.pod_uploaded ? 'POD Received' : 'POD Not Received'}
+            </Text>
+            <Text style={styles.podStatusDescription}>
+              {trip.pod_uploaded 
+                ? 'Supplier balance payments are now enabled.' 
+                : 'Mark as received to enable supplier balance payments.'}
+            </Text>
+          </View>
+          <TouchableOpacity
+            style={[
+              styles.podToggleButton,
+              trip.pod_uploaded ? styles.podToggleButtonReceived : styles.podToggleButtonNotReceived
+            ]}
+            onPress={handleTogglePod}
+          >
+            <Ionicons 
+              name={trip.pod_uploaded ? "close-outline" : "checkmark-outline"} 
+              size={20} 
+              color="#fff" 
+            />
+            <Text style={styles.podToggleButtonText}>
+              {trip.pod_uploaded ? 'Mark as Not Received' : 'Mark as Received'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </Card>
+
       <PodSection trip={trip} />
     </ScrollView>
   );
@@ -360,5 +417,74 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: Spacing.lg,
     fontStyle: 'italic',
+  },
+  challanButton: {
+    backgroundColor: Colors.primary,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: Spacing.md,
+    borderRadius: BorderRadius.md,
+    margin: Spacing.md,
+    gap: Spacing.sm,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  challanButtonText: {
+    fontSize: FontSize.md,
+    fontWeight: '600',
+    color: '#fff',
+  },
+  podStatusCard: {
+    margin: Spacing.md,
+  },
+  podStatusTitle: {
+    fontSize: FontSize.lg,
+    fontWeight: '600',
+    color: Colors.text,
+    marginBottom: Spacing.md,
+  },
+  podStatusToggle: {
+    alignItems: 'center',
+  },
+  podStatusInfo: {
+    alignItems: 'center',
+    marginBottom: Spacing.lg,
+  },
+  podStatusLabel: {
+    fontSize: FontSize.lg,
+    fontWeight: '600',
+    color: Colors.text,
+    marginTop: Spacing.sm,
+  },
+  podStatusDescription: {
+    fontSize: FontSize.sm,
+    color: Colors.textSecondary,
+    textAlign: 'center',
+    marginTop: Spacing.xs,
+    paddingHorizontal: Spacing.lg,
+  },
+  podToggleButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: Spacing.md,
+    borderRadius: BorderRadius.md,
+    gap: Spacing.sm,
+    minWidth: 200,
+  },
+  podToggleButtonReceived: {
+    backgroundColor: Colors.error,
+  },
+  podToggleButtonNotReceived: {
+    backgroundColor: Colors.success,
+  },
+  podToggleButtonText: {
+    fontSize: FontSize.md,
+    fontWeight: '600',
+    color: '#fff',
   },
 });
